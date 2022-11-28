@@ -7,84 +7,45 @@
 
 char state = 0;
 
-
-
 static char
-
-switch_update_interrupt_sense()
-
-{
-
-  char p2val = P2IN;
-
-  /* update switch interrupt to detect changes from current buttons */
-
-  P2IES |= (p2val & SWITCHES);/* if switch up, sense down */
-
+switch_update_interrupt_sense(){
+  char p2val = P2IN; //detects changes from buttons 
+  P2IES |= (p2val & SWITCHES);
   return p2val;
-
 }
 
 
 
-void
+void switch_init(){
 
-switch_init()/* setup switch */
-
-{
-
-  P2REN |= SWITCHES;/* enables resistors for switches */
-
-  P2IE |= SWITCHES;/* enable interrupts from switches */
-
-  P2OUT |= SWITCHES;/* pull-ups for switches */
-
-  P2DIR &= ~SWITCHES;/* set switches' bits for input */
-
+  P2REN |= SWITCHES;
+  P2IE |= SWITCHES;
+  P2OUT |= SWITCHES;
+  P2DIR &= ~SWITCHES;
   switch_update_interrupt_sense();
 
 }
 
 
 
-void
-
-switch_interrupt_handler()
-
-{
+void switch_interrupt_handler(){
 
   char p2val = switch_update_interrupt_sense();
 
-
-
   if (~p2val & SW1) {
-
     state = 1;
-
     sixteenth_note = 0;
-
   }
-
   else if (~p2val & SW2) {
-
     state = 2;
-
     sixteenth_note = 0;
-
   }
-
   else if (~p2val & SW3) {
-
     state = 3;
-
     sixteenth_note = 0;
-
   }
-
   else if (~p2val & SW4) {
-
     state = 4;
-
     sixteenth_note = 0;
   }
   else {
